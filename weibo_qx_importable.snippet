@@ -1,0 +1,24 @@
+#!name=Weibo Splash Ad Cleanup
+#!desc=Remove Weibo startup ad payloads identified from HAR analysis. Replace the SCRIPT_URL below with your own hosted JS file before importing.
+#!system=ios
+#!author=Codex
+#!arguments=SCRIPT_URL=https://example.com/weibo_ad_cleanup.js
+
+[rewrite_local]
+# Startup ad decision chain
+^https?:\/\/bootpreload\.uve\.weibo\.com\/v2\/ad\/preload url script-response-body {{SCRIPT_URL}}
+^https?:\/\/wbapp\.uve\.weibo\.com\/wbapplua\/wbpullad\.lua url script-response-body {{SCRIPT_URL}}
+^https?:\/\/adstrategy\.biz\.weibo\.com\/v3\/strategy\/ad url script-response-body {{SCRIPT_URL}}
+
+# Reporting endpoints
+^https?:\/\/sdkmonitor\.biz\.weibo\.com\/expose-monitor url reject
+^https?:\/\/sdkclick\.biz\.weibo\.com\/click url reject
+
+# Optional asset fallback
+# Enable only if the three rewrites above are not enough.
+# ^https?:\/\/kadmimage\.biz\.weibo\.com\/ad\/pic\/.* url reject-img
+# ^https?:\/\/brandvideo\.biz\.weibo\.com\/oi\/.* url reject-media
+# ^https?:\/\/ad\.us\.sinaimg\.cn\/.* url reject-media
+
+[mitm]
+hostname = %APPEND% bootpreload.uve.weibo.com, wbapp.uve.weibo.com, adstrategy.biz.weibo.com, sdkmonitor.biz.weibo.com, sdkclick.biz.weibo.com

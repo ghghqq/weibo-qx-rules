@@ -1,0 +1,24 @@
+#!name=Weibo Splash Ad Cleanup
+#!desc=Remove Weibo startup ad payloads identified from HAR analysis. Publish the JS to GitHub Gist first, then replace the GIST_RAW_URL below.
+#!system=ios
+#!author=Codex
+#!arguments=GIST_RAW_URL=https://gist.githubusercontent.com/ghghqq/YOUR_GIST_ID/raw/weibo_ad_cleanup.js
+
+[rewrite_local]
+# Startup ad decision chain
+^https?:\/\/bootpreload\.uve\.weibo\.com\/v2\/ad\/preload url script-response-body {{GIST_RAW_URL}}
+^https?:\/\/wbapp\.uve\.weibo\.com\/wbapplua\/wbpullad\.lua url script-response-body {{GIST_RAW_URL}}
+^https?:\/\/adstrategy\.biz\.weibo\.com\/v3\/strategy\/ad url script-response-body {{GIST_RAW_URL}}
+
+# Reporting endpoints
+^https?:\/\/sdkmonitor\.biz\.weibo\.com\/expose-monitor url reject
+^https?:\/\/sdkclick\.biz\.weibo\.com\/click url reject
+
+# Optional asset fallback
+# Enable only if the three rewrites above are not enough.
+# ^https?:\/\/kadmimage\.biz\.weibo\.com\/ad\/pic\/.* url reject-img
+# ^https?:\/\/brandvideo\.biz\.weibo\.com\/oi\/.* url reject-media
+# ^https?:\/\/ad\.us\.sinaimg\.cn\/.* url reject-media
+
+[mitm]
+hostname = %APPEND% bootpreload.uve.weibo.com, wbapp.uve.weibo.com, adstrategy.biz.weibo.com, sdkmonitor.biz.weibo.com, sdkclick.biz.weibo.com
