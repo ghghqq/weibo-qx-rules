@@ -23,30 +23,15 @@ if (!body) {
 }
 
 if (/^https?:\/\/us\.l\.qq\.com\/exapp/.test(url)) {
-  if (body.data && typeof body.data === "object") {
-    Object.keys(body.data).forEach((key) => {
-      const item = body.data[key];
-      if (item && typeof item === "object") {
-        if (Array.isArray(item.list)) {
-          item.list = [];
-        }
-        if ("ret" in item) {
-          item.ret = 0;
-        }
-      }
-    });
-  } else {
-    body.data = {};
-  }
-
-  if (body.last_ads && typeof body.last_ads === "object") {
-    body.last_ads = {};
-  }
-
-  // Ask the app to reduce request frequency for this ad slot.
-  if ("reqinterval" in body) {
-    body.reqinterval = 86400;
-  }
+  // Clear the whole ad payload instead of only emptying nested lists.
+  body.data = {};
+  body.last_ads = {};
+  body.req_exp_list = [];
+  body.seq = body.seq || "0";
+  body.ret = 0;
+  body.rpt = 0;
+  body.msg = "";
+  body.reqinterval = 86400;
 
   $done({ body: JSON.stringify(body) });
 }
