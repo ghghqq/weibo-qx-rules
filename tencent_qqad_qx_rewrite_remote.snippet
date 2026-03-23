@@ -1,0 +1,8 @@
+hostname = us.l.qq.com
+
+^https?:\/\/us\.l\.qq\.com\/exapp url script-response-body https://raw.githubusercontent.com/ghghqq/weibo-qx-rules/refs/heads/main/tencent_qqad_cleanup.js
+^https?:\/\/sdkreport\.e\.qq\.com\/link_event url reject
+
+# Optional fallback asset blocking. Enable only if needed.
+# ^https?:\/\/adsmind\.gdtimg\.com\/.* url reject
+# ^https?:\/\/pgdt\.gtimg\.cn\/.* url reject
